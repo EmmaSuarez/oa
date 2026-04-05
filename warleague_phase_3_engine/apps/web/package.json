@@ -1,0 +1,1 @@
+{"name":"web","private":true,"dependencies":{"next":"latest","react":"latest","react-dom":"latest","@prisma/client":"latest"},"devDependencies":{"prisma":"latest"}}

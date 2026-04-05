@@ -1,0 +1,104 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+enum MatchType {
+  NORMAL
+  FORFEIT_WIN
+  FORFEIT_LOSS
+  BYE
+}
+
+model User {
+  id          String   @id @default(cuid())
+  email       String   @unique
+  displayName String
+  role        String   @default("PLAYER")
+  player      Player?
+}
+
+model Player {
+  id           String   @id @default(cuid())
+  userId       String   @unique
+  glickoRating Float    @default(1500)
+  user         User     @relation(fields: [userId], references: [id])
+  entries      TournamentEntry[]
+  leaguePoints LeaguePoint[]
+}
+
+model League {
+  id          String        @id @default(cuid())
+  name        String
+  createdAt   DateTime      @default(now())
+  tournaments Tournament[]
+  points      LeaguePoint[]
+}
+
+model Tournament {
+  id         String            @id @default(cuid())
+  name       String
+  leagueId   String
+  roundCount Int               @default(3)
+  status     String            @default("OPEN")
+  createdAt  DateTime          @default(now())
+
+  league     League            @relation(fields: [leagueId], references: [id])
+  entries    TournamentEntry[]
+  matches    Match[]
+}
+
+model TournamentEntry {
+  id                String     @id @default(cuid())
+  tournamentId      String
+  playerId          String
+  active            Boolean    @default(true)
+  roundsPlayed      Int        @default(0)
+  wins              Int        @default(0)
+  losses            Int        @default(0)
+  sos               Float      @default(0)
+  adjustedSos       Float      @default(0)
+  vpFor             Int        @default(0)
+  vpAgainst         Int        @default(0)
+  vpDiff            Int        @default(0)
+  vpScored          Int        @default(0)
+  finalPosition     Int?
+  eligibleForPrizes Boolean    @default(false)
+
+  tournament Tournament @relation(fields: [tournamentId], references: [id])
+  player     Player     @relation(fields: [playerId], references: [id])
+
+  @@unique([tournamentId, playerId])
+}
+
+model Match {
+  id           String    @id @default(cuid())
+  tournamentId String
+  round        Int
+  player1Id    String
+  player2Id    String?
+  vp1          Int       @default(0)
+  vp2          Int       @default(0)
+  played       Boolean   @default(false)
+  type         MatchType @default(NORMAL)
+  result       String    @default("PENDING")
+  uniqueKey    String    @unique
+
+  tournament Tournament @relation(fields: [tournamentId], references: [id])
+}
+
+model LeaguePoint {
+  id       String @id @default(cuid())
+  leagueId String
+  playerId String
+  points   Int    @default(0)
+
+  league League @relation(fields: [leagueId], references: [id])
+  player Player @relation(fields: [playerId], references: [id])
+
+  @@unique([leagueId, playerId])
+}

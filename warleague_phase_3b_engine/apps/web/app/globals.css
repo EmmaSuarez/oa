@@ -1,0 +1,13 @@
+html, body {
+  margin: 0;
+  padding: 0;
+  font-family: Arial, sans-serif;
+  background: #0b1320;
+  color: #eef2f7;
+}
+a { color: #e2c46a; text-decoration: none; }
+.wrap { max-width: 1100px; margin: 0 auto; padding: 24px; }
+.card { background: #121c2b; border: 1px solid #2a364a; border-radius: 16px; padding: 20px; }
+.grid { display: grid; gap: 16px; }
+.table { width: 100%; border-collapse: collapse; }
+.table th, .table td { padding: 10px; border-bottom: 1px solid #2a364a; text-align: left; }

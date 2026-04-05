@@ -1,0 +1,8 @@
+
+generator client { provider = "prisma-client-js" }
+datasource db { provider = "sqlite"; url = "file:./dev.db" }
+
+model Player { id String @id @default(cuid()); glickoRating Float @default(1500) }
+model Tournament { id String @id @default(cuid()); name String }
+model TournamentEntry { id String @id @default(cuid()); tournamentId String; playerId String; wins Int @default(0) }
+model Match { id String @id @default(cuid()); tournamentId String; player1Id String; player2Id String? }
